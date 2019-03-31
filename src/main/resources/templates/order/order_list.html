@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/order/order.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+	<form action="/api/order/order_sum_page" class="bs-example bs-example-form" style="padding: 10px;" method="post" id="user_form">
+		<div class="input-group">
+			<input type="date" id="startdate" name="startdate" placeholder="开始时间" style="width: 200px" class="form-control" value="${startdate!''}">
+			<input type="date" id="enddate" name="enddate" placeholder="结束时间" style="width: 200px; margin-left: 10px;" class="form-control" value="${enddate!''}">
+			<input type="hidden" id="pageNum" name="pageNum" class="" value="${pageParam.pageNum!'1'}">
+			<input type="hidden" id="pageSize" name="pageSize" class="" value="#{pageParam.pageSize!'10'}">
+			<input type="hidden" id="maxPage" name="maxPage" class="" value="#{pageParam.maxPage!'99'}">
+			<button type="submit" class="btn btn-primary" style="margin-left: 10px;">查询</button>
+		</div>
+	</form>
+	
+	<table class="table table-striped" style="text-align: center;">
+		<tr>
+			<td>序号</td>
+			<td>金额</td>
+			<td>创建时间</td>
+			<td>操作</td>
+		</tr>
+		<#if orderSumList??>
+			<#list orderSumList as orderSum>
+				<tr>
+				<td>${orderSum.orderSumId!''}</td>
+				<td>${orderSum.price!''}</td>
+				<#if orderSum.operatdate??>
+					<td>${orderSum.operatdate?string('yyyy-MM-dd hh:MM:ss')}</td>
+				<#else>
+					<td>/</td>
+				</#if>
+				<td>
+					<a type="button" class="btn btn-danger btn-sm" href="http://127.0.0.1:8080/api/order/get_order_detail?orderSumId=${orderSum.orderSumId!''}">详情</a>
+				</td>
+			</tr>
+			</#list>
+		</#if>
+	</table>
+	<div style="width:100%; text-align:center;">
+		<ul class="pagination">
+			<#if pageParam?? && pageParam.maxPage gt 1>
+			    <li <#if pageParam.pageNum?? && pageParam.pageNum==1>class="disabled"</#if> ><a style="cursor:pointer" onclick="lastPage()">&laquo;</a></li>
+			    <li class="active"><a id="currentNum" name="currentNum">${pageParam.pageNum}/${pageParam.maxPage}</a></li>
+			    <li <#if pageParam.pageNum?? && pageParam.pageNum gte pageParam.maxPage>class="disabled"</#if>><a style="cursor:pointer" onclick="nextPage()">&raquo;</a></li>
+		    </#if>
+		</ul>
+	</div>
+
+</body>
+</html>

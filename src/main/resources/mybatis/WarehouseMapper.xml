@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.sys.mapper.WarehouseMapper">
+ 
+<!-- 根据药品ID查询库存 -->
+  <select id="getWarehouseByMedcineId" resultType="com.medicine.sys.db.Warehouse">
+    select * from warehouse where medicine_id in
+    <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+	  #{id}
+	</foreach>
+    ;
+  </select>
+
+<!-- 保存库存 -->
+  <insert id="saveWarehouse" useGeneratedKeys="true" keyProperty="warehouseInfo.warehouseId">
+  	INSERT INTO warehouse (num, medicine_id) VALUES (#{warehouseInfo.num}, #{warehouseInfo.medicineId});
+  </insert>
+
+<!-- 更新库存 -->
+  <update id="updateWarehouse">
+  	update warehouse
+    <set>
+        <if test="warehouseInfo != null and warehouseInfo.num != null and warehouseInfo.num!=''">num=#{warehouseInfo.num},</if>
+    </set>
+    where medicine_id=#{warehouseInfo.medicineId}
+  </update>
+  
+</mapper>

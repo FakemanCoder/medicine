@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/medicine/medicine_list.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+	<form action="/api/medicine/medicine_page" class="bs-example bs-example-form" style="padding: 10px;" method="post" id="medicine_form">
+		<div class="input-group">
+			<input type="text" id="name" placeholder="药品名称" style="width: 200px" name="name" class="form-control" value="${name!''}">
+			<input type="text" id="func" placeholder="功能" style="width: 200px; margin-left: 10px;" name="func" class="form-control" value="${func!''}">
+			<input type="hidden" id="pageNum" name="pageNum" class="" value="${pageParam.pageNum!'1'}">
+			<input type="hidden" id="pageSize" name="pageSize" class="" value="#{pageParam.pageSize!'10'}">
+			<input type="hidden" id="maxPage" name="maxPage" class="" value="#{pageParam.maxPage!'99'}">
+			<button type="submit" class="btn btn-primary" style="margin-left: 10px;">查询</button>
+			<a type="button" class="btn btn-primary" href="http://127.0.0.1:8080/api/medicine/toEditPage" style="margin-left: 10px;">添加新药品</a>
+		</div>
+	</form>
+	
+	<table class="table table-striped" style="text-align: center;">
+		<tr>
+			<td>序号</td>
+			<td>产品名称</td>
+			<td>库存数量</td>
+			<td>进货价（元）</td>
+			<td>销售价（元）</td>
+			<td>药品描述</td>
+			<td>药品功能</td>
+			<td>单位名称</td>
+			<td>操作</td>
+		</tr>
+		<#if medicineList??>
+			<#list medicineList as medicine>
+				<tr>
+				<td>${medicine.medicineId!''}</td>
+				<td>${medicine.cnName!''}</td>
+				<td>${medicine.num!''}</td>
+				<td>${medicine.inPrice!''}</td>
+				<td>${medicine.pkgPrice!''}</td>
+				<td>${medicine.description!'无'}</td>
+				<td>${medicine.func!''}</td>
+				<td>${medicine.contentNum!''}/
+				<#if medicine.contentUnit?? && medicine.contentUnit == 'box'>盒
+				<#elseif medicine.contentUnit?? && medicine.contentUnit == 'bottle'>瓶
+				<#elseif medicine.contentUnit?? && medicine.contentUnit == 'grain'>粒
+				<#elseif medicine.contentUnit?? && medicine.contentUnit == 'ml'>毫升
+				<#elseif medicine.contentUnit?? && medicine.contentUnit == 'g'>克
+				</#if>
+				</td>
+				<td>
+					<a type="button" class="btn btn-primary btn-xs" href="http://127.0.0.1:8080/api/medicine/getMedicine?medicineId=${medicine.medicineId!''}">编辑</a>
+					<a type="button" class="btn btn-primary btn-xs" href="http://127.0.0.1:8080/api/medicine/inWarehouse?medicineId=${medicine.medicineId!''}">进货</a>
+					<a type="button" class="btn btn-primary btn-xs" href="http://127.0.0.1:8080/api/medicine/toOutWarehouse?medicineId=${medicine.medicineId!''}">损坏</a>
+					<#if medicine.isRelease?? && medicine.isRelease=='F'>
+					<a type="button" class="btn btn-danger btn-xs" onclick="stopMedicine(${medicine.medicineId!''},'T')">上架</a>
+					<#else>
+					<a type="button" class="btn btn-warning btn-xs" onclick="stopMedicine(${medicine.medicineId!''},'F')">下架</a>
+					</#if>
+				</td>
+			</tr>
+			</#list>
+		</#if>
+	</table>
+	<div style="width:100%; text-align:center;">
+		<ul class="pagination">
+			<#if pageParam?? && pageParam.maxPage gt 1>
+			    <li <#if pageParam.pageNum?? && pageParam.pageNum==1>class="disabled"</#if> ><a style="cursor:pointer" onclick="lastPage()">&laquo;</a></li>
+			    <li class="active"><a id="currentNum" name="currentNum">${pageParam.pageNum}/${pageParam.maxPage}</a></li>
+			    <li <#if pageParam.pageNum?? && pageParam.pageNum gte pageParam.maxPage>class="disabled"</#if>><a style="cursor:pointer" onclick="nextPage()">&raquo;</a></li>
+		    </#if>
+		</ul>
+	</div>
+
+</body>
+</html>

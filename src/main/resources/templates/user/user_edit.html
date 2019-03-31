@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/user/user_list.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+<h1 style="text-align: center; padding-bottom: 20px;">添加/编辑用户信息</h1>
+<form id="edit_user_form" role="form" style="width: 60%;margin-left: 24%" action="http://127.0.0.1:8080/api/user/editUser">
+	<input type="hidden" id="userId" name="userId" value="${userInfo.userId!''}">
+	<input type="hidden" id="role" name="role" value="${userInfo.role!'emp'}">
+	<div class="form-group">
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_realname">姓名</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${userInfo.realname!''}" size="10" id="realname" name="realname" type="text" placeholder="请输入姓名"/>
+       </div>
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_mobile">手机号码</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${userInfo.mobile!''}" id="mobile" name="mobile" type="text" placeholder="请输入手机号码"/>
+       </div>
+    </div>
+    
+    <div class="form-group" style="padding-top: 50px">
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_email" style="">电子邮箱</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${userInfo.email!''}" id="email" name="email" type="text" placeholder="请输入邮箱地址"/>
+       </div>
+	   <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_address">居住地址</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${userInfo.address!''}" name="address" id="address" placeholder="请输入居住地址"/>
+       </div>
+    </div>
+    
+</form>
+    <div class="form-group" style="padding-top: 30px; text-align: center;">
+    <button class="btn btn-primary" style="margin-top: 30px;" onclick="editUser()">提交</button>
+    <#if auth?? && auth.role?? && auth.role=='admin'>
+    <a type="button" href="http://127.0.0.1:8080/api/user/user_page" class="btn btn-default" style="margin-top: 30px;">返回</a>
+    </#if>
+    </div>
+
+</body>
+</html>

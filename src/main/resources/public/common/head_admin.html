@@ -1,0 +1,27 @@
+<nav class="navbar navbar-inverse" role="navigation" style="margin-bottom: 0px; border-radius: 0px;">
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand">药品信息管理系统</a>
+    </div>
+    <div>
+        <ul class="nav navbar-nav">
+            <li><a href="/api/order/get_add_order">发放药品</a></li>
+            <li><a href="/api/medicine/medicine_page">药品管理</a></li>
+            <li><a href="/api/warehouse/warehouse_page">库存记录</a></li>
+            <li><a href="/api/order/order_sum_page">药品发放记录</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户管理<b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/api/user/user_page">用户列表</a></li>
+                    <li><a href="/api/user/getUser">个人信息</a></li>
+                    <li><a href="/api/user/toEditUserPwd">修改密码</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav" style="float: right;">
+            <li><a href="/loginapi/login_out">退出</a></li>
+        </ul>
+    </div>
+    </div>
+</nav>

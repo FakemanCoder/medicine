@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.sys.mapper.UserMapper">
+ 
+<!-- 用户登录 -->
+  <select id="login" resultType="com.medicine.sys.db.User">
+    select * from user where is_del='F' and mobile = #{username} and password = #{password} limit 1;
+  </select>
+
+<!-- 查询用户数量 -->
+  <select id="getAllCount" resultType="int">
+    select count(user_id) from user
+    <where>
+    	<if test="userInfo!=null and userInfo.realname!=null and userInfo.realname!=''">
+    		and realname like #{userInfo.realname}
+    	</if>
+     	<if test="userInfo!=null and userInfo.mobile!=null and userInfo.mobile!=''">
+    		and mobile = #{userInfo.mobile}
+    	</if>
+    	<if test="userInfo!=null and userInfo.role!=null and userInfo.role!=''">
+    		and role = #{userInfo.role}
+    	</if>
+    </where>
+  </select>
+ 
+<!-- 分页查询所有用户 -->
+  <select id="getAll" resultType="com.medicine.sys.db.User">
+    select * from user
+    <where>
+    	1=1
+    	<if test="userInfo!=null and userInfo.realname!=null and userInfo.realname!=''">
+    		and realname like #{userInfo.realname}
+    	</if>
+     	<if test="userInfo!=null and userInfo.mobile!=null and userInfo.mobile!=''">
+    		and mobile = #{userInfo.mobile}
+    	</if>
+    	<if test="userInfo!=null and userInfo.role!=null and userInfo.role!=''">
+    		and role = #{userInfo.role}
+    	</if>
+    	limit #{pageParam.pageNum},#{pageParam.pageSize}
+    </where>
+  </select>
+ 
+<!-- ID查询用户 -->
+  <select id="getUser" resultType="com.medicine.sys.db.User">
+    select * from user where user_id = #{userId} limit 1
+  </select>
+
+<!-- 保存用户 -->
+  <insert id="saveUser">
+  	INSERT INTO user (realname, username, mobile, password, email, is_del, address, role, createby, createdate, updateby, updatedate) 
+  	VALUES (#{userInfo.realname}, #{userInfo.username}, #{userInfo.mobile}, #{userInfo.password}, #{userInfo.email}, 'F', #{userInfo.address}, #{userInfo.role}, #{userInfo.operator}, #{userInfo.operatdate}, #{userInfo.operator}, #{userInfo.operatdate})
+  </insert>
+
+<!-- 更新用户 -->
+  <update id="updateUser">
+  	update user
+    <set>
+        <if test="userInfo != null and userInfo.realname != null and userInfo.realname!=''">realname=#{userInfo.realname},</if>
+        <if test="userInfo != null and userInfo.mobile != null and userInfo.mobile!=''">mobile=#{userInfo.mobile},</if>
+        <if test="userInfo != null and userInfo.email != null and userInfo.email!=''">email=#{userInfo.email},</if>
+        <if test="userInfo != null and userInfo.address != null and userInfo.address!=''">address=#{userInfo.address},</if>
+        <if test="userInfo != null and userInfo.password != null and userInfo.password!=''">password=#{userInfo.password},</if>
+        <if test="userInfo != null and userInfo.role != null and userInfo.role!=''">role=#{userInfo.role},</if>
+        <if test="userInfo != null and userInfo.operator != null and userInfo.operator!=''">updateby=#{userInfo.operator},</if>
+        <if test="userInfo != null and userInfo.operatdate != null and userInfo.operatdate!=''">updatedate=#{userInfo.operatdate}</if>
+    </set>
+    where user_id=#{userInfo.userId}
+  </update>
+  
+<!-- 停用或启用用户 -->
+  <update id="stopUser">
+  	update user set is_del = #{isDel} where user_id=#{userId}
+  </update>
+  
+</mapper>

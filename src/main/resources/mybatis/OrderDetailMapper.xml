@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.sys.mapper.OrderDetailMapper">
+ 
+<!-- 查询订单明细数量 -->
+  <select id="getAllCount" resultType="int">
+    select count(order_detail_id) from order_detail
+    <where>
+    1=1
+    	<if test="orderDetailInfo!=null and orderDetailInfo.orderSumId!=null and orderDetailInfo.orderSumId!=''">
+    		and order_sum_id = #{orderDetailInfo.orderSumId}
+    	</if>
+    	<if test="orderDetailInfo!=null and orderDetailInfo.status!=null and orderDetailInfo.status!=''">
+    		and status = #{orderDetailInfo.status}
+    	</if>
+    	<if test="orderDetailInfo!=null and orderDetailInfo.medicineId!=null and orderDetailInfo.medicineId!=''">
+    		and medicine_id = #{orderDetailInfo.medicineId}
+    	</if>
+    </where>
+  </select>
+ 
+<!-- 查询订单明细不分页 -->
+  <select id="getAllInfo" resultType="com.medicine.sys.db.OrderDetail">
+    select * from order_detail
+    <where>
+    1=1
+    	<if test="orderDetailInfo!=null and orderDetailInfo.orderSumId!=null and orderDetailInfo.orderSumId!=''">
+    		and order_sum_id = #{orderDetailInfo.orderSumId}
+    	</if>
+    	<if test="orderDetailInfo!=null and orderDetailInfo.status!=null and orderDetailInfo.status!=''">
+    		and status = #{orderDetailInfo.status}
+    	</if>
+    	<if test="orderDetailInfo!=null and orderDetailInfo.medicineId!=null and orderDetailInfo.medicineId!=''">
+    		and medicine_id = #{orderDetailInfo.medicineId}
+    	</if>
+    </where>
+  </select>
+ 
+<!-- 分页查询所有订单明细 -->
+  <select id="getAll" resultType="com.medicine.sys.db.OrderDetail">
+    select * from order_detail
+    <where>
+    	1=1
+    	<if test="orderDetailInfo!=null and orderDetailInfo.orderSumId!=null and orderDetailInfo.orderSumId!=''">
+    		and order_sum_id = #{orderDetailInfo.orderSumId}
+    	</if>
+    	<if test="orderDetailInfo!=null and orderDetailInfo.status!=null and orderDetailInfo.status!=''">
+    		and status = #{orderDetailInfo.status}
+    	</if>
+    	<if test="orderDetailInfo!=null and orderDetailInfo.medicineId!=null and orderDetailInfo.medicineId!=''">
+    		and medicine_id = #{orderDetailInfo.medicineId}
+    	</if>
+    	limit #{pageParam.pageNum},#{pageParam.pageSize}
+    </where>
+  </select>
+ 
+<!-- ID查询订单明细 -->
+  <select id="getOrderDetailByIds" resultType="com.medicine.sys.db.OrderDetail">
+    select * from order_detail where order_detail_id in 
+    <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+	  #{id}
+	</foreach>
+  </select>
+ 
+<!-- ID查询订单明细 -->
+  <select id="getOrderDetailByOrderSumId" resultType="com.medicine.sys.db.OrderDetail">
+    select * from order_detail where order_sum_id = #{orderSumId}
+  </select>
+
+<!-- 保存订单明细 -->
+  <insert id="saveOrderDetail">
+  	INSERT INTO order_detail (order_sum_id, status, num, medicine_id, warehouse_user_id, createby, createdate, updateby, updatedate) VALUES 
+  	(#{orderDetailInfo.orderSumId},#{orderDetailInfo.status},#{orderDetailInfo.num},#{orderDetailInfo.medicineId},#{orderDetailInfo.warehouseUserId},
+  	#{orderDetailInfo.operator}, #{orderDetailInfo.operatdate},#{orderDetailInfo.operator}, #{orderDetailInfo.operatdate});
+  </insert>
+
+<!-- 更新订单明细 -->
+  <update id="updateOrderDetail">
+  	update order_detail
+    <set>
+        <if test="orderDetailInfo != null and orderDetailInfo.orderSumId != null and orderDetailInfo.orderSumId!=''">
+        	order_sum_id=#{orderDetailInfo.orderSumId},
+        </if>
+        <if test="orderDetailInfo != null and orderDetailInfo.status != null and orderDetailInfo.status!=''">
+        	status=#{orderDetailInfo.status},
+        </if>
+        <if test="orderDetailInfo != null and orderDetailInfo.num != null and orderDetailInfo.num!=''">
+        	num=#{orderDetailInfo.num}
+        </if>
+    </set>
+    <where>
+    	1=1
+    	<if test="orderDetailInfo != null and orderDetailInfo.orderSumId != null and orderDetailInfo.orderSumId!=''">
+    		and order_sum_id=#{orderDetailInfo.orderSumId}
+    	</if>
+    	<if test="orderDetailInfo != null and orderDetailInfo.orderDetailId != null and orderDetailInfo.orderDetailId!=''">
+    		and order_detail_id=#{orderDetailInfo.orderDetailId}
+    	</if>
+    </where>
+  </update>
+
+<!-- 生成总订单更新订单明细 -->
+  <update id="updateOrderDetailByStatus">
+  	update order_detail
+    <set>
+        <if test="orderDetailInfo != null and orderDetailInfo.orderSumId != null and orderDetailInfo.orderSumId!=''">
+        	order_sum_id=#{orderDetailInfo.orderSumId},
+        </if>
+        <if test="orderDetailInfo != null and orderDetailInfo.status != null and orderDetailInfo.status!=''">
+        	status=#{orderDetailInfo.status},
+        </if>
+        <if test="orderDetailInfo != null">
+        	updatedate=#{orderDetailInfo.operatdate}
+        </if>
+    </set>
+    	WHERE status = '1'
+  </update>
+
+<!-- 删除订单明细 -->
+  <delete id="delOrderDetail">
+  	delete from order_detail 
+  	<where>
+  	1=1
+        <if test="orderDetailInfo != null and orderDetailInfo.orderDetailId != null and orderDetailInfo.orderDetailId!=''">
+        	and order_detail_id=#{orderDetailInfo.orderDetailId}
+        </if>
+        <if test="orderDetailInfo != null and orderDetailInfo.status != null and orderDetailInfo.status!=''">
+        	and status=#{orderDetailInfo.status}
+        </if>
+        <if test="orderDetailInfo != null and orderDetailInfo.num != null and orderDetailInfo.num!=''">
+        	and num=#{orderDetailInfo.num}
+        </if>
+		<if test="orderDetailInfo!=null and orderDetailInfo.orderSumId!=null and orderDetailInfo.orderSumId!=''">
+	   		and order_sum_id = #{orderDetailInfo.orderSumId}
+	   	</if>
+  	</where>
+  </delete>
+  
+</mapper>

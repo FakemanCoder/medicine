@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>药品信息管理系统</title>
+	<link rel="stylesheet" href="http://127.0.0.1:8080/login/auth.css">
+	<script src="http://127.0.0.1:8080/login/login.js"></script>
+	<script src="http://127.0.0.1:8080/bootstrap/js/jquery.min.js"></script>
+</head>
+
+<body>
+	<div class="lowin">
+		<div class="lowin-brand">
+			<img src="http://127.0.0.1:8080/login/kodinger.jpg" alt="logo">
+		</div>
+		<div class="lowin-wrapper">
+			<div class="lowin-box lowin-login">
+				<div class="lowin-box-inner">
+					<p>用户登录</p>
+					<div class="lowin-group">
+						<label>请输入账号：</label>
+						<input type="text" id="username" name="username" class="lowin-input">
+					</div>
+					<div class="lowin-group password-group">
+						<label>请输入密码：</label>
+						<input type="password" id="password" name="password" autocomplete="current-password" class="lowin-input">
+					</div>
+					<button onclick="login()" class="lowin-btn login-btn">
+						登 录
+					</button>
+				</div>
+			</div>
+		</div>
+	
+	</div>
+
+	<script src="auth.js"></script>
+	<script>
+		Auth.init({
+			login_url: '#login',
+			forgot_url: '#forgot'
+		});
+	</script>
+</body>
+</html>

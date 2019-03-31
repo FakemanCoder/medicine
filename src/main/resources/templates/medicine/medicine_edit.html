@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/medicine/medicine_list.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+<h1 style="text-align: center; padding-bottom: 20px;">添加/编辑药品信息</h1>
+<form id="edit_medicine_form" role="form" style="width: 60%;margin-left: 24%" action="http://127.0.0.1:8080/api/medicine/editMedicine">
+	<input type="hidden" id="medicineId" name="medicineId" value="${medicineInfo.medicineId!''}">
+	<div class="form-group">
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_name">产品名称</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${medicineInfo.cnName!''}" size="10" id="cnName" name="cnName" type="text" placeholder="请输入药品名称"/>
+       </div>
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_inPrice">进货价</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${medicineInfo.inPrice!''}" id="inPrice" name="inPrice" type="text" placeholder="请输入进货价格"/>
+       </div>
+    </div>
+    
+    <div class="form-group" style="padding-top: 50px">
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_pkgPrice" style="">销售价</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${medicineInfo.pkgPrice!''}" id="pkgPrice" name="pkgPrice" type="text" placeholder="请输入销售价格"/>
+       </div>
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_description">描述</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${medicineInfo.description!''}" name="description" id="description" placeholder="请输入描述"/>
+       </div>
+    </div>
+    
+	<div class="form-group" style="padding-top: 40px">
+	   <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_func">药品功能</label>
+       <div class="col-sm-4">
+          <input class="form-control" value="${medicineInfo.func!''}" name="func" id="func" placeholder="请输入药品功能"/>
+       </div>
+       <label class="col-sm-2 control-label" style="margin-top: 5px; width: 10%" for="ds_content" style="">药品容量</label>
+       <div class="col-sm-4">
+       	<input class="form-control" id="contentNum" style="width: 68%;display: inline-table;" name="contentNum" value="${medicineInfo.contentNum!''}" placeholder="数量">
+		<select id="contentUnit" name="contentUnit" class="form-control" style="width: 30%;display: inline-table;">
+			<option value="box" <#if medicineInfo.contentUnit?? && medicineInfo.contentUnit == 'box'>selected</#if> >盒</option>
+			<option value="bottle" <#if medicineInfo.contentUnit?? && medicineInfo.contentUnit == 'bottle'>selected</#if> >瓶</option>
+			<option value="grain" <#if medicineInfo.contentUnit?? && medicineInfo.contentUnit == 'grain'>selected</#if> >粒</option>
+			<option value="ml" <#if medicineInfo.contentUnit?? && medicineInfo.contentUnit == 'ml'>selected</#if> >ml</option>
+			<option value="g" <#if medicineInfo.contentUnit?? && medicineInfo.contentUnit == 'g'>selected</#if> >g</option>
+		</select>
+       </div>
+    </div>
+</form>
+    <div class="form-group" style="padding-top: 30px; text-align: center;">
+    <button class="btn btn-primary" style="margin-top: 30px;" onclick="editMedicine()">提交</button>
+    <a type="button" href="http://127.0.0.1:8080/api/medicine/medicine_page" class="btn btn-default" style="margin-top: 30px;">返回</a>
+    </div>
+
+</body>
+</html>

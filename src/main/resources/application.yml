@@ -1,0 +1,27 @@
+#默认使用配置
+spring:
+  profiles:
+    active: dev
+
+#公共配置与profiles选择无关
+mybatis:
+  typeAliasesPackage: com.medicine.sys.db
+  mapperLocations: classpath:mybatis/*.xml
+
+# 打印sql
+logging:
+  level:
+     com.medicine.sys.mapper : debug
+---
+
+#开发配置
+spring:
+  profiles: dev
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/medicine_sys?useUnicode=true&serverTimezone=GMT&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource

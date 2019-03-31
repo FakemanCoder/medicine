@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/order/order.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/css/bootstrap-select.min.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-select/2.0.0-beta1/js/bootstrap-select.min.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+	<#if orderDetailList??>
+	<table class="table table-striped" style="margin: auto;text-align: center;">
+		<tr>
+			<td>序号</td>
+			<td>药品名称</td>
+			<td>数量</td>
+			<td>单价</td>
+			<td>操作</td>
+		</tr>
+		<#list orderDetailList as orderDetail>
+			<tr>
+				<td>${orderDetail.orderDetailId!''}</td>
+				<td>${orderDetail.cnName!''}</td>
+				<td>${orderDetail.num!''}</td>
+				<td>${orderDetail.price!''}</td>
+				<td>
+					<a type="button" class="btn btn-danger btn-sm" onclick="delOrderDetail(${orderDetail.orderDetailId!''})">删除</a>
+				</td>
+			</tr>
+		</#list>
+	</table>
+	<#else>
+		<h3 style="text-align: center;">请添加药品</h3>
+	</#if>
+	<!-- <form action="/api/order/add_order_detail" method="post"> -->
+	<div class="form-group" style="text-align:center;margin: auto;padding-left: 20%;">
+       <label class="control-label" style="margin-top: 5px;float: left;">药品名称</label>
+       <div class="col-sm-2">
+          <select id="medicineId" name="medicineId" class="selectpicker show-tick form-control" data-live-search="true">
+			<option value="">--药品--</option>
+			<#if medicineInfoList??>
+				<#list medicineInfoList as medicine>
+					<option value="${medicine.medicineId}">${medicine.cnName}</option>
+				</#list>
+			</#if>
+		</select>
+       </div>
+       <label class="control-label" style="margin-top: 5px;float: left;" for="ds_mobile">数量</label>
+       <div class="col-sm-2">
+          <input class="form-control" value="" id="num" name="num" type="number" placeholder="请输入数量"/>
+       </div>
+       <div style="float: left;">
+			<a type="button" class="btn btn-primary" onclick="addOrderDetail()">添加订单药品</a>
+			<a type="button" class="btn btn-warning" onclick="delAllOrderDetail()">清空订单列表</a>
+			订单总金额：<a style="text-decoration: none;" id="sumPrice" name="sumName">${price!''}</a>
+			订单总数量：<a style="text-decoration: none;">${num!''}</a>
+			<a type="button" class="btn btn-danger" onclick="addOrder()">添加总订单</a>
+       </div>
+    </div>
+	<!-- </form> -->
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.sys.mapper.WarehouseLogMapper">
+
+<!-- 查询仓库记录数量 -->
+  <select id="getAllCount" resultType="int">
+    select count(warehouse_log_id) from warehouse_log
+    <where>
+    	<if test="warehouseLogInfo!=null and warehouseLogInfo.startdate!=null and warehouseLogInfo.startdate!=''">
+    		<![CDATA[ and DATE_FORMAT(createdate, '%Y-%m-%d') >= DATE_FORMAT(#{warehouseLogInfo.startdate}, '%Y-%m-%d')]]>
+    		<!-- and createdate &gt; #{warehouseLogInfo.startdate} -->
+    	</if>
+    	<if test="warehouseLogInfo!=null and warehouseLogInfo.enddate!=null and warehouseLogInfo.enddate!=''">
+    		<![CDATA[ and DATE_FORMAT(createdate, '%Y-%m-%d') < DATE_FORMAT(#{warehouseLogInfo.enddate}, '%Y-%m-%d')]]>
+    		<!-- and createdate &lt; #{warehouseLogInfo.enddate} -->
+    	</if>
+     	<if test="warehouseLogInfo!=null and warehouseLogInfo.datafrom!=null and warehouseLogInfo.datafrom!=''">
+    		and datafrom = #{warehouseLogInfo.datafrom}
+    	</if>
+    </where>
+  </select>
+ 
+<!-- 分页查询所有仓库记录 -->
+  <select id="getAll" resultType="com.medicine.sys.db.WarehouseLog">
+    select * from warehouse_log
+    <where>
+    	1=1
+    	<if test="warehouseLogInfo!=null and warehouseLogInfo.startdate!=null and warehouseLogInfo.startdate!=''">
+    		<![CDATA[ and DATE_FORMAT(createdate, '%Y-%m-%d') >= DATE_FORMAT(#{warehouseLogInfo.startdate}, '%Y-%m-%d')]]>
+    		<!-- and createdate &gt; #{warehouseLogInfo.startdate} -->
+    	</if>
+    	<if test="warehouseLogInfo!=null and warehouseLogInfo.enddate!=null and warehouseLogInfo.enddate!=''">
+    		<![CDATA[ and DATE_FORMAT(createdate, '%Y-%m-%d') < DATE_FORMAT(#{warehouseLogInfo.enddate}, '%Y-%m-%d')]]>
+    		<!-- and createdate &lt; #{warehouseLogInfo.enddate} -->
+    	</if>
+     	<if test="warehouseLogInfo!=null and warehouseLogInfo.datafrom!=null and warehouseLogInfo.datafrom!=''">
+    		and datafrom = #{warehouseLogInfo.datafrom}
+    	</if>
+    	limit #{pageParam.pageNum},#{pageParam.pageSize}
+    </where>
+  </select>
+
+<!-- 保存库存日志 -->
+  <insert id="saveWarehouseLog">
+  	INSERT INTO warehouse_log (num, medicine_id, price, datafrom, warehouse_id, order_detail_id, createby, createdate) 
+VALUES (#{warehouseLogInfo.num}, #{warehouseLogInfo.medicineId}, #{warehouseLogInfo.price}, #{warehouseLogInfo.datafrom},
+ #{warehouseLogInfo.warehouseId}, #{warehouseLogInfo.orderDetailId}, #{warehouseLogInfo.createby}, #{warehouseLogInfo.createdate});
+  </insert>
+
+</mapper>

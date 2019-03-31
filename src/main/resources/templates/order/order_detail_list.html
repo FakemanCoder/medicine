@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/order/order.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+	<input type="hidden" id="orderSumId" name="orderSumId" value="${orderSumId!''}">
+	<#if orderDetailList??>
+	<table class="table table-striped" style="text-align: center;">
+		<tr>
+			<td>序号</td>
+			<td>药品名称</td>
+			<td>数量</td>
+			<td>单价</td>
+			<td>状态</td>
+			<td>操作</td>
+		</tr>
+		<#list orderDetailList as orderDetail>
+			<tr>
+				<td>${orderDetail.orderDetailId!''}</td>
+				<td>${orderDetail.cnName!''}</td>
+				<td>${orderDetail.num!''}</td>
+				<td>${orderDetail.price!''}</td>
+				<td>${orderDetail.statusName!''}</td>
+				<td>
+				<#if orderDetail.status?? && orderDetail.status!='3'>
+					<a type="button" class="btn btn-danger btn-sm" onclick="returnOrderDetail(${orderDetail.orderDetailId!''})">退货</a>
+				<#else>
+					/
+				</#if>
+				</td>
+			</tr>
+		</#list>
+	</table>
+	<#else>
+		<h3 style="text-align: center;">暂无数据</h3>
+	</#if>
+
+</body>
+</html>

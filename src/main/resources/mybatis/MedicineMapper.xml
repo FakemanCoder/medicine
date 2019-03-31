@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medicine.sys.mapper.MedicineMapper">
+ 
+<!-- 查询用户数量 -->
+  <select id="getAllCount" resultType="int">
+    select count(medicine_id) from medicine
+    <where>
+    	<if test="medicineInfo!=null and medicineInfo.cnName!=null and medicineInfo.cnName!=''">
+    		and cn_name like #{medicineInfo.cnName}
+    	</if>
+    	<if test="medicineInfo!=null and medicineInfo.func!=null and medicineInfo.func!=''">
+    		and func like #{medicineInfo.func}
+    	</if>
+     	<if test="medicineInfo!=null and medicineInfo.pkgPrice!=null and medicineInfo.pkgPrice!=''">
+    		and pkg_price = #{medicineInfo.pkgPrice}
+    	</if>
+    </where>
+  </select>
+ 
+<!-- 分页查询所有用户 -->
+  <select id="getAll" resultType="com.medicine.sys.db.Medicine">
+    select * from medicine
+    <where>
+    	1=1
+    	<if test="medicineInfo!=null and medicineInfo.cnName!=null and medicineInfo.cnName!=''">
+    		and cn_name like #{medicineInfo.cnName}
+    	</if>
+    	<if test="medicineInfo!=null and medicineInfo.func!=null and medicineInfo.func!=''">
+    		and func like #{medicineInfo.func}
+    	</if>
+     	<if test="medicineInfo!=null and medicineInfo.pkgPrice!=null and medicineInfo.pkgPrice!=''">
+    		and pkg_price = #{medicineInfo.pkgPrice}
+    	</if>
+    	limit #{pageParam.pageNum},#{pageParam.pageSize}
+    </where>
+  </select>
+ 
+<!-- 分页查询所有用户 -->
+  <select id="getAllMedicine" resultType="com.medicine.sys.db.Medicine">
+    select * from medicine t1 left join warehouse t2 on t2.medicine_id = t1.medicine_id
+    <where>
+    	t2.num > 0
+    	<if test="medicineInfo!=null and medicineInfo.cnName!=null and medicineInfo.cnName!=''">
+    		and t1.cn_name like #{medicineInfo.cnName}
+    	</if>
+    	<if test="medicineInfo!=null and medicineInfo.func!=null and medicineInfo.func!=''">
+    		and t1.func like #{medicineInfo.func}
+    	</if>
+     	<if test="medicineInfo!=null and medicineInfo.pkgPrice!=null and medicineInfo.pkgPrice!=''">
+    		and t1.pkg_price = #{medicineInfo.pkgPrice}
+    	</if>
+     	<if test="medicineInfo!=null and medicineInfo.isRelease!=null and medicineInfo.isRelease!=''">
+    		and t1.is_release = #{medicineInfo.isRelease}
+    	</if>
+    </where>
+  </select>
+ 
+<!-- ID查询用户 -->
+  <select id="getMedicine" resultType="com.medicine.sys.db.Medicine">
+    select * from Medicine where medicine_id = #{medicineId} limit 1
+  </select>
+
+  <select id="getMedicineByIds" resultType="com.medicine.sys.db.Medicine">
+    select * from Medicine where medicine_id in 
+    <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+	  #{id}
+	</foreach>
+    ;
+  </select>
+
+<!-- 保存用户 -->
+  <insert id="saveMedicine">
+  	INSERT INTO medicine (cn_name, in_price, pkg_price, description, is_release, func, 
+  	content_num, content_unit, createby, createdate, updateby, updatedate) VALUES 
+  	(#{medicineInfo.cnName}, #{medicineInfo.inPrice}, #{medicineInfo.pkgPrice}, #{medicineInfo.description}, 'T', 
+  	#{medicineInfo.func}, #{medicineInfo.contentNum}, #{medicineInfo.contentUnit}, #{medicineInfo.operator}, #{medicineInfo.operatdate},#{medicineInfo.operator}, #{medicineInfo.operatdate});
+  </insert>
+
+<!-- 更新用户 -->
+  <update id="updateMedicine">
+  	update medicine
+    <set>
+        <if test="medicineInfo != null and medicineInfo.cnName != null and medicineInfo.cnName!=''">cn_name=#{medicineInfo.cnName},</if>
+        <if test="medicineInfo != null and medicineInfo.inPrice != null and medicineInfo.inPrice!=''">in_price=#{medicineInfo.inPrice},</if>
+        <if test="medicineInfo != null and medicineInfo.pkgPrice != null and medicineInfo.pkgPrice!=''">pkg_price=#{medicineInfo.pkgPrice},</if>
+        <if test="medicineInfo != null and medicineInfo.description != null and medicineInfo.description!=''">description=#{medicineInfo.description},</if>
+        <if test="medicineInfo != null and medicineInfo.func != null and medicineInfo.func!=''">func=#{medicineInfo.func},</if>
+        <if test="medicineInfo != null and medicineInfo.contentNum != null and medicineInfo.contentNum!=''">content_num=#{medicineInfo.contentNum},</if>
+        <if test="medicineInfo != null and medicineInfo.contentUnit != null and medicineInfo.contentUnit!=''">content_unit=#{medicineInfo.contentUnit},</if>
+        <if test="medicineInfo != null and medicineInfo.operator != null and medicineInfo.operator!=''">updateby=#{medicineInfo.operator},</if>
+        <if test="medicineInfo != null and medicineInfo.operatdate != null and medicineInfo.operatdate!=''">updatedate=#{medicineInfo.operatdate}</if>
+    </set>
+    where medicine_id=#{medicineInfo.medicineId}
+  </update>
+  
+<!-- 停用或启用药品 -->
+  <update id="stopMedicine">
+  	update medicine set is_release = #{isRelease} where medicine_id=#{medicineId}
+  </update>
+  
+</mapper>

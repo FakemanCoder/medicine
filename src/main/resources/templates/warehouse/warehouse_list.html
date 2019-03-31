@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>药品信息管理系统</title>
+<link rel="import" href="http://127.0.0.1:8080/common/css_js.html">
+<link rel="import" href="http://127.0.0.1:8080/common/head.html" id="head_html"/>
+<link rel="import" href="http://127.0.0.1:8080/common/head_admin.html" id="head_admin_html"/>
+<script src="http://127.0.0.1:8080/warehouse/warehouse.js"></script>
+</head>
+<body>
+<#if auth?? && auth.role?? && auth.role=='admin'>
+	<script type="text/javascript">
+	    document.write(head_admin_html.import.body.innerHTML);
+	</script>
+<#else>
+	<script type="text/javascript">
+	    document.write(head_html.import.body.innerHTML);
+	</script>
+</#if>
+	<form action="http://127.0.0.1:8080/api/warehouse/warehouse_page" class="bs-example bs-example-form" style="padding: 10px;" method="post" id="warehouse_page_form">
+		<div class="input-group">
+			<input type="date" id="startdate" placeholder="开始时间" style="width: 200px" name="startdate" class="form-control" value="${startdate!''}">
+			<input type="date" id="enddate" placeholder="结束时间" style="width: 200px; margin-left: 10px;" name="enddate" class="form-control" value="${enddate!''}">
+			<select id="datafrom" name="datafrom" class="form-control" style="width: 200px; margin-left: 10px;">
+				<option value="">-- 来源 --</option>
+				<option value="jinhuo" <#if datafrom?? && datafrom=='jinhuo'>selected="selected"</#if>>入库</option>
+				<option value="tuihuo" <#if datafrom?? && datafrom=='tuihuo'>selected="selected"</#if>>退货</option>
+				<option value="sunhao" <#if datafrom?? && datafrom=='sunhao'>selected="selected"</#if>>损耗</option>
+				<option value="fafang" <#if datafrom?? && datafrom=='fafang'>selected="selected"</#if>>发放</option>
+			</select>
+			<input type="hidden" id="pageNum" name="pageNum" class="" value="${pageParam.pageNum!'1'}">
+			<input type="hidden" id="pageSize" name="pageSize" class="" value="#{pageParam.pageSize!'10'}">
+			<input type="hidden" id="maxPage" name="maxPage" class="" value="#{pageParam.maxPage!'99'}">
+			<button type="submit" class="btn btn-primary" style="margin-left: 10px;">查询</button>
+		</div>
+	</form>
+	
+	<#if warehouseLogList??>
+	<table class="table table-striped" style="text-align: center;">
+		<tr>
+			<td>序号</td>
+			<td>产品名称</td>
+			<td>数量</td>
+			<td>金额</td>
+			<td>来源</td>
+			<td>创建时间</td>
+		</tr>
+			<#list warehouseLogList as warehouseLog>
+				<tr>
+				<td>${warehouseLog.warehouseLogId!''}</td>
+				<td>${warehouseLog.name!''}</td>
+				<td>${warehouseLog.num!''}</td>
+				<td>${warehouseLog.price!''}</td>
+				<td>${warehouseLog.datafromName!''}</td>
+				<td>${warehouseLog.createdate?string('yyyy-MM-dd hh:MM:ss')}</td>
+			</tr>
+			</#list>
+	</table>
+	<#else>
+	<h3 style="text-align: center;">暂无进货记录</h3>
+	</#if>
+	<div style="width:100%; text-align:center;">
+		<ul class="pagination">
+			<#if pageParam?? && pageParam.maxPage gt 1>
+			    <li <#if pageParam.pageNum?? && pageParam.pageNum==1>class="disabled"</#if> ><a style="cursor:pointer" onclick="lastPage()">&laquo;</a></li>
+			    <li class="active"><a id="currentNum" name="currentNum">${pageParam.pageNum}/${pageParam.maxPage}</a></li>
+			    <li <#if pageParam.pageNum?? && pageParam.pageNum gte pageParam.maxPage>class="disabled"</#if>><a style="cursor:pointer" onclick="nextPage()">&raquo;</a></li>
+		    </#if>
+		</ul>
+	</div>
+
+</body>
+</html>
